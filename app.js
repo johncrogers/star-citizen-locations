@@ -187,6 +187,16 @@
     return out.length ? `<nav class="links">${out.join("")}</nav>` : "";
   }
 
+  // Contracts around the nearest planet, moon or system, in the contracts app (its in: term).
+  // Few contracts name a single outpost or station, so smaller places link to their body.
+  function contractsHere(p) {
+    const href = siteHref("contracts");
+    if (!href) return "";
+    const around = ["system", "planet", "moon"].includes(p.kind) ? p : window.Places.bodyOf(p) || byId.get(p.near) || chain(p)[0];
+    if (!around) return "";
+    return `<a href="${esc(href)}?q=${encodeURIComponent(`in:"${around.name}"`)}">Contracts around ${esc(around.name)} →</a>`;
+  }
+
   function renderDetail() {
     const p = byId.get(state.selected);
     if (!p) {
@@ -229,6 +239,7 @@
 
       ${p.description ? `<h3>About</h3><p class="desc">${esc(p.description)}</p>` : ""}
       <nav class="links">
+        ${contractsHere(p)}
         ${p.wiki ? `<a href="${esc(p.wiki)}" target="_blank" rel="noopener">Wiki ↗</a>` : ""}
         ${dir.sources.map((s) => `<a href="${esc(s)}" target="_blank" rel="noopener">Directions source ↗</a>`).join("")}
       </nav>`;
