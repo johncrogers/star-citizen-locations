@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Locations</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-view="overview">
+  <header class="top">
+    <div>
+      <div class="title-row">
+        <h1>Locations</h1>
+        <nav class="site-links" id="siteLinks" aria-label="Other sites"></nav>
+      </div>
+      <p class="meta" id="meta"></p>
+    </div>
+    <div class="total" id="total"></div>
+  </header>
+
+  <nav class="scope" id="tabs" aria-label="View"></nav>
+
+  <section class="toolbar">
+    <input id="search" type="search" placeholder="Search places and shops: lorville, cubby blast, kind:station has:clinic, in:pyro sells:items…" autocomplete="off" spellcheck="false">
+  </section>
+  <section class="search-only toolbar filters-row">
+    <div class="chips" id="kindChips"></div>
+    <div class="fp-flags" id="serviceFilters"></div>
+  </section>
+
+  <main class="layout">
+    <div class="overview" id="overview"></div>
+    <ul class="list search-only" id="list"></ul>
+    <article class="detail" id="detail"></article>
+  </main>
+
+  <script src="site.js"></script>
+  <script src="catalog.data.js"></script>
+  <script src="directions.data.js"></script>
+  <script src="route.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
