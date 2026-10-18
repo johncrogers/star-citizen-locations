@@ -440,3 +440,7 @@ body[data-view="overview"] .layout { grid-template-columns: minmax(0, 1.25fr) mi
   body[data-view="overview"] .layout { grid-template-columns: 1fr; }
 }
 .filters-row .fp-flag { white-space: nowrap; }
+
+/* Names that link to the glossary: quiet until hovered. */
+a.lookup { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }
+a.lookup:hover { color: var(--accent); }

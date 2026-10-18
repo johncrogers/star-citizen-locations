@@ -5,6 +5,10 @@
   const meta = window.LOCATIONS_META || {};
   const SITE = window.SITE || {};
   const siteHref = (id) => ((SITE.links || []).find((l) => l.id === id) || {}).href;
+  // Names link to their entry in the glossary app (it finds the entry by name).
+  const glossaryHref = ((window.SITE || {}).links || []).find((l) => l.id === "glossary")?.href;
+  const lookUp = (name) => (glossaryHref && name ? `<a class="lookup" href="${esc(glossaryHref)}#find/${encodeURIComponent(name)}" title="Look up ${esc(name)} in the glossary">${esc(name)}</a>` : esc(name));
+  const LORE_KINDS = ["system", "planet", "moon", "city", "station"];
 
   const esc = (s) =>
     String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -221,7 +225,7 @@
     $("detail").innerHTML = `
       ${p.image ? `<div class="hero"><img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>` : `<div class="hero-spacer"></div>`}
       <div class="detail-head">
-        <div><h2>${esc(p.name)}</h2><p class="sub crumbs">${crumbs}</p></div>
+        <div><h2>${esc(p.name)}</h2><p class="sub crumbs">${crumbs}${glossaryHref && LORE_KINDS.includes(p.kind) ? ` · <a href="${esc(glossaryHref)}#find/${encodeURIComponent(p.name)}" title="Lore and game notes">Lore →</a>` : ""}</p></div>
         <div class="badges"><span class="tag kind-${p.kind}">${esc(KIND[p.kind])}</span></div>
       </div>
       ${p.sells ? `<p>Sells: <strong>${esc(p.sells.join(", "))}</strong></p>` : ""}
