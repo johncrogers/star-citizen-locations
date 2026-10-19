@@ -99,7 +99,7 @@ a { color: var(--accent); }
 
 .list { list-style: none; margin: 0; padding: 0 4px 0 0; display: flex; flex-direction: column; gap: 6px; }
 /* The list and the detail panel each scroll on their own, so the page never gets taller than the window. */
-.list, .detail, .overview {
+.list, .detail, .overview, .wish-view {
   position: sticky;
   top: 12px;
   max-height: calc(100vh - 24px);
@@ -392,6 +392,9 @@ button.wish-toggle:hover { border-color: var(--star); }
 /* ── Locations ─────────────────────────────── */
 body[data-view="overview"] .search-only { display: none; }
 body[data-view="search"] .overview { display: none; }
+body[data-view="wishlist"] .search-only, body[data-view="wishlist"] .overview { display: none; }
+body:not([data-view="wishlist"]) .wish-view { display: none; }
+body[data-view="wishlist"] .layout { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
 body[data-view="overview"] .layout { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
 .filters-row { padding-top: 0; gap: 10px 18px; }
 .overview { padding-right: 4px; }
@@ -437,10 +440,32 @@ body[data-view="overview"] .layout { grid-template-columns: minmax(0, 1.25fr) mi
 .tag.kind-outpost { color: #d29922; }
 .tag.kind-asteroid, .tag.kind-poi, .tag.kind-comm, .tag.kind-jump, .tag.kind-system { color: var(--muted); }
 @media (max-width: 800px) {
-  body[data-view="overview"] .layout { grid-template-columns: 1fr; }
+  body[data-view="overview"] .layout, body[data-view="wishlist"] .layout { grid-template-columns: 1fr; }
+  .wish-view { position: static; max-height: none; overflow: visible; }
 }
 .filters-row .fp-flag { white-space: nowrap; }
 
 /* Names that link to the glossary: quiet until hovered. */
 a.lookup { color: inherit; text-decoration: underline dotted; text-underline-offset: 3px; }
 a.lookup:hover { color: var(--accent); }
+
+/* Wishlist tab: everything on my wishlists, with the shops that sell it. */
+.wish-view { padding-right: 4px; }
+.wl-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 10px; }
+.wl-summary { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+.wl-section { margin-bottom: 16px; }
+.wl-section h3 { margin: 6px 0 8px; font-size: 16px; }
+.wl-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.wl-row { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+.wl-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.wl-head strong a { color: var(--text); text-decoration: none; }
+.wl-head strong a:hover { text-decoration: underline; }
+.wl-group { font-size: 12px; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 0 8px; }
+.wl-cost { margin-left: auto; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.wl-cost small { color: var(--muted); }
+.wl-shops { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 2px; font-size: 14px; }
+.wl-price { color: var(--muted); font-variant-numeric: tabular-nums; }
+.wl-best { font-size: 11px; color: var(--buy); border: 1px solid currentColor; border-radius: 999px; padding: 0 6px; }
+.wl-why { margin: 4px 0 0; font-size: 14px; color: var(--muted); }
+.wl-more summary { cursor: pointer; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.wl-hub .sub { margin: 0 0 6px; font-size: 13px; color: var(--muted); }

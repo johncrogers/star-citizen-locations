@@ -230,6 +230,7 @@
       </div>
       ${p.sells ? `<p>Sells: <strong>${esc(p.sells.join(", "))}</strong></p>` : ""}
       ${soldHere(p)}
+      ${window.Wish.detail(p)}
 
       <h3>How to get there</h3>
       <ol class="route">${dir.steps.map((s) => `<li${s.curated ? ' class="curated"' : ""}>${esc(s.text)}${s.curated ? ` <span class="hand" title="From directions.data.js">hand-written</span>` : ""}</li>`).join("")}</ol>
@@ -252,11 +253,14 @@
   // ── Wiring ────────────────────────────────────────────────────────────────
   let shownDetail = null;
   function render() {
-    $("tabs").innerHTML = [["overview", "Overview"], ["search", "Search"]]
+    $("tabs").innerHTML = [["overview", "Overview"], ["search", "Search"], ["wishlist", "Wishlist"]]
       .map(([k, l]) => `<button class="tab${state.view === k ? " on" : ""}" data-view="${k}">${l}</button>`).join("");
     document.body.dataset.view = state.view;
-    if (state.view === "overview") renderOverview();
-    else renderSearch();
+    if (state.view === "overview") { renderOverview(); $("total").innerHTML = ""; }
+    else if (state.view === "wishlist") {
+      const { count } = window.Wish.render($("wishView"), render);
+      $("total").innerHTML = count == null ? "" : `<span>on your wishlists</span><strong>${fmt(count)}</strong>`;
+    } else renderSearch();
     renderDetail();
     if (state.selected !== shownDetail) {
       $("detail").scrollTop = 0;
@@ -277,10 +281,11 @@
     try { history.replaceState(null, "", url); } catch (e) { /* blocked on some file:// pages */ }
   }
 
-  // #<place id>, or #code:<terminal code> (links from the items app).
+  // #<place id>, #code:<terminal code> (links from the items app), or #wishlist (the Wishlist tab).
   function selectFromHash() {
     const h = decodeURIComponent(location.hash.slice(1));
     if (!h) return;
+    if (h === "wishlist") { setView("wishlist"); return; }
     const code = h.match(/^code:(.+)$/i);
     const p = code ? places.find((x) => (x.codes || []).includes(code[1].toUpperCase())) : byId.get(h);
     if (!p) return;
@@ -321,6 +326,9 @@
     render();
   });
   window.addEventListener("hashchange", () => { selectFromHash(); render(); });
+  window.Wish.bind($("wishView"), render);
+  // Coming back from another app's tab: pick up stars and owned ticks made there.
+  window.addEventListener("focus", () => { if (window.Wish.ready()) render(); });
 
   const q = new URLSearchParams(location.search).get("q");
   if (q) { setQuery(q); setView("search"); }
